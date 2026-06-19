@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>izamyun GAMES - ブラウザで遊べる無料ゲーム集</title>
+<meta name="description" content="HTMLで動く、CMなし、完全無料、オフラインでも遊べる個人制作ゲーム集">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:#0a0a1a;color:#eee;font-family:'Segoe UI',Tahoma,Geneva,sans-serif;line-height:1.6;overflow-x:hidden;min-height:100vh}
+body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(ellipse at top,rgba(0,255,255,.08),transparent 50%),radial-gradient(ellipse at bottom,rgba(255,0,255,.08),transparent 50%);pointer-events:none;z-index:0}
+.container{max-width:1100px;margin:0 auto;padding:0 20px;position:relative;z-index:1}
+
+/* ===== HERO ===== */
+.hero{text-align:center;padding:80px 20px 60px;position:relative;z-index:1}
+.hero h1{font-size:clamp(2.2em,7vw,4em);letter-spacing:clamp(4px,1.5vw,12px);color:#0ff;margin-bottom:10px;text-shadow:0 0 20px #0ff,0 0 40px #0ff,0 0 80px #0ff;animation:flicker 4s infinite}
+@keyframes flicker{0%,100%{opacity:1}50%{opacity:.92}}
+.hero .tagline{font-size:clamp(.9em,2.5vw,1.2em);color:#f0f;text-shadow:0 0 10px #f0f;letter-spacing:2px;margin-bottom:8px}
+.hero .sub{font-size:clamp(.75em,2vw,.95em);color:#666;letter-spacing:1px}
+.hero .scroll{margin-top:40px;font-size:.85em;color:#666;animation:bounce 2s infinite}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}
+
+/* ===== SECTION ===== */
+section{padding:60px 0;position:relative;z-index:1}
+.sect-title{text-align:center;font-size:clamp(1.4em,4vw,2.2em);color:#ff0;text-shadow:0 0 15px #ff0;margin-bottom:10px;letter-spacing:4px}
+.sect-sub{text-align:center;color:#666;font-size:.9em;margin-bottom:40px}
+
+/* ===== CONCEPT ===== */
+.concept-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}
+.concept-card{background:linear-gradient(145deg,#12122a,#1a1a3e);border:2px solid #2a2a3e;border-radius:14px;padding:24px 18px;text-align:center;transition:all .3s}
+.concept-card:hover{border-color:#0ff;transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,255,255,.2)}
+.concept-icon{font-size:2.5em;margin-bottom:12px;display:block}
+.concept-title{font-size:1.05em;font-weight:bold;color:#0ff;margin-bottom:8px}
+.concept-desc{font-size:.82em;color:#aaa;line-height:1.6}
+
+/* ===== GAMES ===== */
+.games-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+.game-card{background:linear-gradient(160deg,#13133a,#1a1a3e);border:2px solid #2a2a3e;border-radius:18px;padding:28px 22px;text-align:center;transition:all .35s;display:flex;flex-direction:column;align-items:center;position:relative;overflow:hidden}
+.game-card::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:linear-gradient(45deg,transparent 30%,rgba(255,0,255,.05) 50%,transparent 70%);transform:rotate(45deg);opacity:0;transition:opacity .5s}
+.game-card:hover::before{opacity:1}
+.game-card:hover{border-color:#f0f;transform:translateY(-6px);box-shadow:0 10px 30px rgba(255,0,255,.3)}
+.game-icon{font-size:3.5em;margin-bottom:14px;filter:drop-shadow(0 0 12px rgba(0,255,255,.6))}
+.game-title{font-size:1.4em;font-weight:bold;color:#0ff;margin-bottom:6px;letter-spacing:2px;text-shadow:0 0 10px #0ff;position:relative;z-index:1}
+.game-tags{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:14px;position:relative;z-index:1}
+.tag{font-size:.65em;padding:3px 10px;border:1px solid #444;border-radius:12px;color:#888;background:rgba(0,0,0,.3)}
+.game-desc{font-size:.85em;color:#aaa;margin-bottom:20px;flex-grow:1;line-height:1.7;position:relative;z-index:1}
+.play-btn{display:inline-block;padding:11px 32px;border:2px solid #0ff;border-radius:8px;background:transparent;color:#0ff;text-decoration:none;font-weight:bold;letter-spacing:2px;transition:all .25s;font-size:.95em;position:relative;z-index:1;-webkit-tap-highlight-color:transparent}
+.play-btn:hover,.play-btn:active{background:#0ff;color:#000;box-shadow:0 0 24px rgba(0,255,255,.7);transform:scale(1.04)}
+.game-card.coming-soon{opacity:.55;border-style:dashed;border-color:#444}
+.game-card.coming-soon .game-title{color:#888;text-shadow:none}
+.game-card.coming-soon .game-icon{filter:grayscale(.8) drop-shadow(0 0 8px rgba(255,255,255,.2))}
+.coming-badge{display:inline-block;padding:9px 28px;border:1px dashed #666;border-radius:8px;color:#666;font-size:.9em;letter-spacing:2px}
+
+/* ===== ABOUT ===== */
+.about-box{background:linear-gradient(160deg,#12122a,#1a1a35);border:2px solid #2a2a3e;border-radius:18px;padding:32px 28px;max-width:780px;margin:0 auto;text-align:center}
+.about-box h3{color:#f0f;font-size:1.15em;margin-bottom:14px;letter-spacing:2px;text-shadow:0 0 10px #f0f}
+.about-box p{color:#aaa;font-size:.88em;line-height:1.85;margin-bottom:10px}
+.about-box .creator{color:#0ff;font-weight:bold;font-size:1em;text-shadow:0 0 8px #0ff}
+
+/* ===== SUPPORT ===== */
+.support-box{text-align:center;padding:40px 20px;background:linear-gradient(145deg,rgba(255,170,0,.08),rgba(255,170,0,.02));border:2px solid rgba(255,170,0,.3);border-radius:20px;max-width:600px;margin:0 auto}
+.support-box h3{color:#fa0;font-size:1.3em;margin-bottom:10px;text-shadow:0 0 12px #fa0;letter-spacing:2px}
+.support-box p{color:#aaa;font-size:.85em;margin-bottom:20px;line-height:1.7}
+.bmac-btn{display:inline-flex;align-items:center;gap:10px;padding:14px 32px;border:2px solid #fa0;border-radius:10px;background:transparent;color:#fa0;text-decoration:none;font-weight:bold;font-size:1.05em;letter-spacing:1px;transition:all .25s;-webkit-tap-highlight-color:transparent}
+.bmac-btn:hover,.bmac-btn:active{background:#fa0;color:#000;box-shadow:0 0 24px rgba(255,170,0,.6);transform:scale(1.05)}
+.bmac-btn .coffee{font-size:1.4em}
+
+/* ===== FOOTER ===== */
+footer{padding:50px 20px 30px;text-align:center;border-top:1px solid #1a1a2e;margin-top:60px;color:#555;font-size:.78em;line-height:1.9;position:relative;z-index:1}
+footer .footer-title{color:#888;font-size:.85em;margin-bottom:12px;letter-spacing:2px}
+footer .notices{max-width:600px;margin:14px auto;text-align:left;display:inline-block}
+footer .notices p{margin-bottom:4px}
+footer .copy{margin-top:20px;color:#444}
+footer a{color:#0ff;text-decoration:none}
+footer a:hover{text-decoration:underline}
+
+@media(max-width:600px){
+ .hero{padding:50px 16px 40px}
+ section{padding:40px 0}
+ .game-card{padding:24px 18px}
+ .about-box{padding:24px 18px}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== HERO ===== -->
+<header class="hero">
+<div class="container">
+<h1>IZAMYUN GAMES</h1>
+<p class="tagline">- ブラウザで遊べる無料ゲーム集 -</p>
+<p class="sub">No Install / No Ads / 100% Free</p>
+<p class="scroll">▼ SCROLL ▼</p>
+</div>
+</header>
+
+<!-- ===== CONCEPT ===== -->
+<section id="concept">
+<div class="container">
+<h2 class="sect-title">CONCEPT</h2>
+<p class="sect-sub">- このサイトのコンセプト -</p>
+<div class="concept-grid">
+
+<div class="concept-card">
+<span class="concept-icon">&#127760;</span>
+<div class="concept-title">HTMLで動く</div>
+<p class="concept-desc">ブラウザだけで遊べる。<br>面倒なインストール不要。</p>
+</div>
+
+<div class="concept-card">
+<span class="concept-icon">&#128683;</span>
+<div class="concept-title">CMなし</div>
+<p class="concept-desc">途中で広告が入らない。<br>ストレスフリーで遊べる。</p>
+</div>
+
+<div class="concept-card">
+<span class="concept-icon">&#128176;</span>
+<div class="concept-title">完全無料</div>
+<p class="concept-desc">課金要素ゼロ。<br>全ゲーム無料で全部遊べる。</p>
+</div>
+
+<div class="concept-card">
+<span class="concept-icon">&#128229;</span>
+<div class="concept-title">オフラインOK</div>
+<p class="concept-desc">HTMLをダウンロードすれば<br>ネットなしでも遊べる。</p>
+</div>
+
+</div>
+</div>
+</section>
+
+<!-- ===== GAMES ===== -->
+<section id="games">
+<div class="container">
+<h2 class="sect-title">GAMES</h2>
+<p class="sect-sub">- 公開中のゲーム -</p>
+<div class="games-grid">
+
+<div class="game-card">
+<div class="game-icon">&#127937;</div>
+<div class="game-title">BLOCK BREAKER</div>
+<div class="game-tags">
+<span class="tag">アクション</span>
+<span class="tag">5モード</span>
+<span class="tag">9アイテム</span>
+</div>
+<p class="game-desc">懐かしのブロック崩し！<br>ノーマル・ハード・タイムアタック・エンドレスなど多彩なモード搭載。ビーム、ウォール、貫通ボールなど9種類のアイテムでド派手なプレイが楽しめる。</p>
+<a href="block_breaker.html" class="play-btn">&#9654; PLAY</a>
+</div>
+
+<div class="game-card">
+<div class="game-icon">&#129513;</div>
+<div class="game-title">BLOCK DROP</div>
+<div class="game-tags">
+<span class="tag">パズル</span>
+<span class="tag">落ちもの</span>
+</div>
+<p class="game-desc">テトリス風の落ちものパズル！<br>降ってくるブロックを揃えてラインを消そう。シンプルだけど熱中度MAX。集中力と判断力を試そう。</p>
+<a href="block-drop.html" class="play-btn">&#9654; PLAY</a>
+</div>
+
+<div class="game-card coming-soon">
+<div class="game-icon">&#10067;</div>
+<div class="game-title">COMING SOON</div>
+<div class="game-tags">
+<span class="tag">準備中</span>
+</div>
+<p class="game-desc">次のゲームを鋭意制作中！<br>このサイトは今後もどんどん新しいゲームを追加していきます。お楽しみに！</p>
+<span class="coming-badge">COMING SOON</span>
+</div>
+
+</div>
+</div>
+</section>
+
+<!-- ===== ABOUT ===== -->
+<section id="about">
+<div class="container">
+<h2 class="sect-title">ABOUT</h2>
+<p class="sect-sub">- このサイトについて -</p>
+<div class="about-box">
+<h3>&#127919; 今後も新しいゲームを追加予定！</h3>
+<p>このサイトは <span class="creator">izamyun</span> による個人制作のゲーム集です。</p>
+<p>「ブラウザで気軽に、広告なしで、無料で、オフラインでも遊べる」をコンセプトに、シンプルだけど面白いゲームをコツコツ作っています。</p>
+<p>レトロな雰囲気のアーケードゲームから、現代的なパズルまで、ジャンルを問わず色々と挑戦中。今後もどんどん新作を追加していくので、たまに覗きに来てもらえると嬉しいです。</p>
+<p style="color:#777;margin-top:14px;font-size:.78em">※ 趣味の制作物のため、更新ペースはまったりです。</p>
+</div>
+</div>
+</section>
+
+<!-- ===== SUPPORT ===== -->
+<section id="support">
+<div class="container">
+<h2 class="sect-title">SUPPORT</h2>
+<p class="sect-sub">- 開発者を支援する -</p>
+<div class="support-box">
+<h3>&#9749; Buy Me A Coffee</h3>
+<p>このサイトが気に入ったら、<br>コーヒー1杯分の支援をいただけると<br>新作ゲーム制作のはげみになります！</p>
+<a href="https://buymeacoffee.com/izamyun" target="_blank" rel="noopener noreferrer" class="bmac-btn">
+<span class="coffee">&#9749;</span>
+<span>支援する（投げ銭）</span>
+</a>
+</div>
+</div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+<div class="container">
+<p class="footer-title">&#9888; 注意事項</p>
+<div class="notices">
+<p>・本サイトのゲームはすべて <strong>個人制作</strong> です。</p>
+<p>・<strong>商用利用は禁止</strong> です。</p>
+<p>・個人利用・学習目的での使用のみ許可されています。</p>
+<p>・無断での再配布・改変後の公開はご遠慮ください。</p>
+<p>・利用により生じた損害について、作成者は一切の責任を負いません。</p>
+<p>・お問い合わせは <a href="https://buymeacoffee.com/izamyun" target="_blank" rel="noopener noreferrer">こちら</a> から。</p>
+</div>
+<p class="copy">&copy; 2026 izamyun &nbsp;|&nbsp; Created: 2026-06-19 &nbsp;|&nbsp; v1.0.0</p>
+</div>
+</footer>
+
+</body>
+</html>
