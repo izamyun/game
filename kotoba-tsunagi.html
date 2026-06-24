@@ -38,11 +38,10 @@ button.small{font-size:clamp(11px,3vw,14px);padding:7px 10px;border-radius:9px}
 #wordDisplay.valid{border-color:#5ae89c;color:#2a9c5a;background:#e0ffe8}
 #wordDisplay.invalid{border-color:#e85a5a;color:#a83a3a}
 #gridWrap{
-  position:relative;
-  width:100%;
   flex:1;
   min-height:0;
-  max-height:none;
+  width:100%;
+  overflow:hidden;
 }
 #grid{display:grid;gap:8px;background:rgba(255,255,255,.4);padding:8px;border-radius:14px;touch-action:none;width:100%;height:100%;position:relative;overflow:visible}
 .cell{background:radial-gradient(circle at 30% 30%,#fff,#ffd6e6);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:clamp(16px,5vw,24px);font-weight:bold;color:#333;box-shadow:0 3px 0 #d8b8c8,inset 0 2px 4px rgba(255,255,255,.8),inset 0 -2px 4px rgba(0,0,0,.05);transition:transform .12s,background .15s,box-shadow .15s;aspect-ratio:1;position:relative}
@@ -86,13 +85,13 @@ footer{font-size:10px;color:#666;text-align:center;padding:4px;line-height:1.4}
 .support-btn{background:linear-gradient(180deg,#ffe066,#ffb300)!important;color:#5a3a00!important;box-shadow:0 3px 0 #a87a00,0 4px 6px rgba(0,0,0,.15)!important}
 .other-btn{background:linear-gradient(180deg,#a0e0ff,#5ab8e8)!important;color:#fff!important;box-shadow:0 3px 0 #3a8aa8,0 4px 6px rgba(0,0,0,.15)!important}
 #gameScreen{
-  display:flex;
   flex-direction:column;
-  height:100dvh;
   min-height:0;
 }
+
 #gameScreen.active{
   display:flex;
+  height:100dvh
 }
 #hudBar{
   flex-shrink:0;
@@ -104,7 +103,7 @@ footer{font-size:10px;color:#666;text-align:center;padding:4px;line-height:1.4}
 
 #gameControls{
   flex-shrink:0;
-  padding-bottom:4px;
+  padding-bottom:max(4px, env(safe-area-inset-bottom));
 }
 </style>
 </head>
