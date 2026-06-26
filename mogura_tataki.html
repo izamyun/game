@@ -66,9 +66,9 @@ h1.logo{text-align:center;font-size:clamp(20px,6.5vw,30px);margin:6px 0 2px;lett
 .freeze-timer.show{opacity:1;animation:freezeBeat 1s ease-in-out infinite}
 @keyframes freezeBeat{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.15)}}
 .freeze-timer .label{display:block;font-size:.22em;opacity:.85;letter-spacing:.5em;color:#aef;text-shadow:0 0 10px #aef}
-.hole{position:relative;border-radius:50%;background:radial-gradient(ellipse at 50% 80%,#1a0f3a 0%,#0a0620 70%,#000 100%);box-shadow:inset 0 -4px 8px rgba(0,0,0,.8),inset 0 4px 6px rgba(0,240,255,.18);overflow:hidden;cursor:pointer;display:flex;align-items:flex-end;justify-content:center}
+.hole{position:relative;border-radius:50%;background:radial-gradient(ellipse at 50% 80%,#1a0f3a 0%,#0a0620 70%,#000 100%);box-shadow:inset 0 -4px 8px rgba(0,0,0,.8),inset 0 4px 6px rgba(0,240,255,.18);overflow:hidden;cursor:pointer;display:flex;align-items:flex-end;justify-content:center;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 .hole::after{content:"";position:absolute;left:8%;right:8%;bottom:6%;height:14%;background:rgba(0,0,0,.7);border-radius:50%;filter:blur(2px)}
-.actor{position:absolute;left:5%;right:5%;bottom:-100%;transition:bottom .18s cubic-bezier(.3,1.3,.6,1);display:flex;align-items:flex-end;justify-content:center;pointer-events:none}
+.actor{position:absolute;left:0;right:0;bottom:-100%;transition:bottom .18s cubic-bezier(.3,1.3,.6,1);display:flex;align-items:flex-end;justify-content:center;pointer-events:auto}
 .actor.up{bottom:8%}
 .actor.slow{transition:bottom .9s ease-in-out !important}
 .actor.frozen{transition:none !important;filter:hue-rotate(180deg) brightness(.7) saturate(.5) drop-shadow(0 0 8px #7df) !important;animation:frozenGlow 2s ease-in-out infinite}
@@ -191,6 +191,18 @@ th{color:var(--neon1)}
 .combo-banner{position:absolute;top:30%;left:50%;transform:translateX(-50%);font-size:clamp(28px,8vw,42px);font-weight:900;letter-spacing:.1em;pointer-events:none;z-index:54;opacity:0;font-family:"Impact",sans-serif}
 .combo-banner.show{animation:bannerFlash 1.5s forwards}
 @keyframes bannerFlash{0%{opacity:0;transform:translateX(-50%) scale(.3)}30%{opacity:1;transform:translateX(-50%) scale(1.2)}70%{opacity:1;transform:translateX(-50%) scale(1)}100%{opacity:0;transform:translateX(-50%) scale(1.4)}}
+#btnOtherGames{
+  background:linear-gradient(135deg,rgba(157,255,0,.15),rgba(0,240,255,.15));
+  border-color:var(--neon3);
+  box-shadow:0 0 12px rgba(157,255,0,.5),0 0 24px rgba(157,255,0,.2);
+  text-decoration:none;
+  transition:all .2s
+}
+#btnOtherGames:hover{
+  background:linear-gradient(135deg,rgba(157,255,0,.3),rgba(0,240,255,.3));
+  box-shadow:0 0 16px var(--neon3),0 0 32px rgba(157,255,0,.4);
+  transform:translateY(-2px)
+}
 </style>
 </head>
 <body>
@@ -292,7 +304,10 @@ th{color:var(--neon1)}
 <button class="btn small" id="btnHist">📜 履歴</button>
 <button class="btn small green" id="btnDL">⬇ このHTMLを保存</button>
 </div></div>
-
+<div class="panel" style="text-align:center">
+<a class="btn green" id="btnOtherGames" href="index.html" style="display:inline-flex;align-items:center;gap:6px;padding:10px 20px;font-size:14px">🎮 他のゲームで遊ぶ</a>
+<p class="desc" style="margin-top:6px;font-size:10px;opacity:.7">index.html のゲーム一覧へ移動します</p>
+</div>
 <div class="panel" style="text-align:center">
 <a class="btn pink" href="https://buymeacoffee.com/izamyun" target="_blank" rel="noopener">☕ 開発者を支援する（投げ銭）</a>
 </div>
@@ -544,7 +559,7 @@ function getBossMaxHP(){if(State.mode==="god")return 17;if(State.mode==="master"
 
 function showOverlay(id){const el=$(id);if(!el)return;el.classList.add("show");el.style.display="flex";}
 
-function buildBoard(){const board=$("#board");board.innerHTML="";const c=State.cfg.cols;board.style.gridTemplateColumns="repeat("+c+", 1fr)";State.cells=[];for(let i=0;i<c*c;i++){const hole=document.createElement("div");hole.className="hole";hole.dataset.idx=i;const actor=document.createElement("div");actor.className="actor";hole.appendChild(actor);hole.addEventListener("pointerdown",e=>{e.preventDefault();onHit(i);},{passive:false});board.appendChild(hole);State.cells.push({hole:hole,actor:actor,occupied:false});}}
+function buildBoard(){const board=$("#board");board.innerHTML="";const c=State.cfg.cols;board.style.gridTemplateColumns="repeat("+c+", 1fr)";State.cells=[];for(let i=0;i<c*c;i++){const hole=document.createElement("div");hole.className="hole";hole.dataset.idx=i;const actor=document.createElement("div");actor.className="actor";hole.appendChild(actor);const tapHandler=(e)=>{e.preventDefault();e.stopPropagation();onHit(i);};hole.addEventListener("pointerdown",tapHandler,{passive:false});actor.addEventListener("pointerdown",tapHandler,{passive:false});board.appendChild(hole);State.cells.push({hole:hole,actor:actor,occupied:false});}}
 function clearAllCellsImmediate(){for(const c of State.cells){c.occupied=false;c.actor.className="actor";c.actor.innerHTML="";}State.actors=[];State.bossActor=null;}
 
 function bossDmgLevel(){const max=getBossMaxHP();const r=State.bossHP/max;if(r>0.66)return 0;if(r>0.4)return 1;if(r>0.15)return 2;return 3;}
@@ -560,7 +575,7 @@ function triggerScreenShake(){const g=$("#game");g.classList.remove("damage-shak
 function addExplosion(cell){const ex=document.createElement("div");ex.className="explosion";cell.hole.appendChild(ex);setTimeout(()=>ex.remove(),700);const sm=document.createElement("div");sm.className="smoke";cell.hole.appendChild(sm);setTimeout(()=>sm.remove(),1100);}
 function addDeadEnemy(cell,svg){const de=document.createElement("div");de.className="dead-enemy";de.innerHTML=svg;cell.hole.appendChild(de);setTimeout(()=>de.remove(),900);}
 
-function onHit(i){if(!State.running)return;ensureAudio();let actor=null;for(const a of State.actors){if(a.idx===i){actor=a;break;}}if(!actor){State.combo=0;updateCombo();sfxBad();return;}const cell=State.cells[i];if(actor.type==="boss"){State.bossHP--;State.totalHitSession++;sfxBoss();sfxHit();cell.actor.classList.add("shake");cell.actor.insertAdjacentHTML("beforeend",svgCryOverlay());setTimeout(()=>cell.actor.classList.remove("shake"),300);floatPts(cell,"-1","var(--warn)");updateBossHpUI();let pts=5;if(performance.now()<State.effects.multUntil)pts*=2;State.score+=pts;State.stageScore+=pts;updateHud();if(State.bossHP<=0){State.actors=State.actors.filter(a=>a!==actor);cell.actor.classList.add("hit");cell.actor.classList.remove("up");cell.occupied=false;State.bossActor=null;$("#bossHpBar").classList.remove("show");bossDeathFinale();}else{State.actors=State.actors.filter(a=>a!==actor);cell.actor.classList.remove("up");cell.occupied=false;setTimeout(((c)=>()=>{c.actor.className="actor";c.actor.innerHTML="";})(cell),400);State.bossActor=null;State.bossRespawnAt=performance.now()+800;}return;}if(actor.type==="enemy"){let pts=actor.score;if(performance.now()<State.effects.multUntil)pts*=2;State.combo++;if(State.combo>1)pts+=Math.floor(State.combo/3);State.score+=pts;State.stageScore+=pts;State.totalHitSession++;if(State.combo>State.maxComboSession)State.maxComboSession=State.combo;sfxHit();showCombo();floatPts(cell,"+"+pts,"var(--neon3)");cell.actor.insertAdjacentHTML("beforeend",svgCryOverlay());if(State.cfg.isBoss&&(State.bossPhase===1||State.bossPhase===2)){State.phaseKills++;if(State.phaseKills>=State.phaseTarget)advanceBossPhase();}}else if(actor.type==="hazard"){if(State.effects.shield){State.effects.shield=false;updateBadges();toast("シールド消費！");sfxItem();}else{damage(1);sfxBad();floatPts(cell,"-1 HP","var(--warn)");State.combo=0;updateCombo();triggerScreenShake();State.tookDamageThisStage=true;}}else if(actor.type==="item"){applyItem(actor.sub,cell);sfxItem();}State.actors=State.actors.filter(a=>a!==actor);cell.actor.classList.add("hit");cell.actor.classList.remove("up");cell.occupied=false;setTimeout(((c)=>()=>{if(!c.occupied){c.actor.className="actor";c.actor.innerHTML="";}})(cell),300);updateHud();}
+function onHit(i){if(!State.running)return;ensureAudio();let actor=null;for(const a of State.actors){if(a.idx===i){actor=a;break;}}if(!actor){const cell=State.cells[i];if(cell&&cell.actor.classList.contains("hit"))return;State.combo=0;updateCombo();sfxBad();return;}const cell=State.cells[i];if(actor.type==="boss"){State.bossHP--;State.totalHitSession++;sfxBoss();sfxHit();cell.actor.classList.add("shake");cell.actor.insertAdjacentHTML("beforeend",svgCryOverlay());setTimeout(()=>cell.actor.classList.remove("shake"),300);floatPts(cell,"-1","var(--warn)");updateBossHpUI();let pts=5;if(performance.now()<State.effects.multUntil)pts*=2;State.score+=pts;State.stageScore+=pts;updateHud();if(State.bossHP<=0){State.actors=State.actors.filter(a=>a!==actor);cell.actor.classList.add("hit");cell.actor.classList.remove("up");cell.occupied=false;State.bossActor=null;$("#bossHpBar").classList.remove("show");bossDeathFinale();}else{State.actors=State.actors.filter(a=>a!==actor);cell.actor.classList.remove("up");cell.occupied=false;setTimeout(((c)=>()=>{c.actor.className="actor";c.actor.innerHTML="";})(cell),400);State.bossActor=null;State.bossRespawnAt=performance.now()+800;}return;}if(actor.type==="enemy"){let pts=actor.score;if(performance.now()<State.effects.multUntil)pts*=2;State.combo++;if(State.combo>1)pts+=Math.floor(State.combo/3);State.score+=pts;State.stageScore+=pts;State.totalHitSession++;if(State.combo>State.maxComboSession)State.maxComboSession=State.combo;sfxHit();showCombo();floatPts(cell,"+"+pts,"var(--neon3)");cell.actor.insertAdjacentHTML("beforeend",svgCryOverlay());if(State.cfg.isBoss&&(State.bossPhase===1||State.bossPhase===2)){State.phaseKills++;if(State.phaseKills>=State.phaseTarget)advanceBossPhase();}}else if(actor.type==="hazard"){if(State.effects.shield){State.effects.shield=false;updateBadges();toast("シールド消費！");sfxItem();}else{damage(1);sfxBad();floatPts(cell,"-1 HP","var(--warn)");State.combo=0;updateCombo();triggerScreenShake();State.tookDamageThisStage=true;}}else if(actor.type==="item"){applyItem(actor.sub,cell);sfxItem();}State.actors=State.actors.filter(a=>a!==actor);cell.actor.classList.add("hit");cell.actor.classList.remove("up");cell.occupied=false;setTimeout(((c)=>()=>{if(!c.occupied){c.actor.className="actor";c.actor.innerHTML="";}})(cell),300);updateHud();}
 
 function advanceBossPhase(){State.bossPhase++;State.phaseKills=0;State.inPhaseTransition=true;State.transitionUntil=performance.now()+1500;for(const a of State.actors){const c=State.cells[a.idx];c.actor.classList.add("hit");c.actor.classList.remove("up");c.occupied=false;setTimeout(((cc)=>()=>{if(!cc.occupied){cc.actor.className="actor";cc.actor.innerHTML="";}})(c),220);}State.actors=[];updateHud();if(State.bossPhase===3){toast("PHASE 3 - BOSS出現！");sfxBoss();setTimeout(()=>{if(State.running)spawnBoss(performance.now());},1400);}else{toast("PHASE "+State.bossPhase+"/3");sfxClear();}}
 
@@ -587,7 +602,21 @@ function setupStage(){State.cfg=stageConfig(State.stage);State.target=State.cfg.
 function stageClear(){if(!State.running)return;State.running=false;cancelAnimationFrame(State.rafId);sfxClear();$("#bossHpBar").classList.remove("show");$("#freezeTimer").classList.remove("show");toast("STAGE "+State.stage+" CLEAR!");try{addAchievement("ステージ"+State.stage+"クリア");if(!State.tookDamageThisStage){State.noDamageStreak++;addAchievement("\uD83C\uDFC5 ステージ"+State.stage+" ノーダメージ");$("#ovNoDmg").style.display="block";if(State.noDamageStreak>=3)addAchievement("\uD83E\uDD47 3連続ノーダメージ");if(State.noDamageStreak>=5)addAchievement("\uD83D\uDC51 5連続ノーダメージ");}else{State.noDamageStreak=0;$("#ovNoDmg").style.display="none";}$("#ovScore").textContent=State.score;$("#ovNext").textContent=State.stage+1;showOverlay("#ovStageClear");}catch(e){$("#ovScore").textContent=State.score;$("#ovNext").textContent=State.stage+1;showOverlay("#ovStageClear");}}
 function nextStage(){closeOverlays();State.stage++;setupStage();State.running=true;State.lastTs=0;cancelAnimationFrame(State.rafId);State.rafId=requestAnimationFrame(tickFrame);}
 function gameOver(){if(!State.running)return;State.running=false;cancelAnimationFrame(State.rafId);stopBGM();sfxOver();$("#bossHpBar").classList.remove("show");$("#freezeTimer").classList.remove("show");const game=$("#game");const flash=$("#goFlash");flash.classList.add("show");game.classList.add("slomo");$("#ovOverStage").textContent=State.stage;$("#ovOverScore").textContent=State.score;try{const rankIdx=pushRank(State.mode,State.score,State.stage);$("#ovNewRec").style.display=rankIdx===0?"block":"none";if(rankIdx===0)addAchievement("\uD83C\uDFC6 "+State.mode+" モード 1位記録");finishRecord(false);}catch(e){}setTimeout(()=>{showOverlay("#ovGameOver");},1800);}
-function finishRecord(allClear){try{const d=getStore();d.hist.play++;d.hist.time+=Math.floor((Date.now()-State.startTs)/1000);if(State.stage>d.hist.maxStage)d.hist.maxStage=State.stage;if(State.maxComboSession>d.hist.maxCombo)d.hist.maxCombo=State.maxComboSession;d.hist.totalHit+=State.totalHitSession;if(State.maxComboSession>=20&&!d.hist.ach.includes("\uD83D\uDD25 コンボ20達成"))d.hist.ach.push("\uD83D\uDD25 コンボ20達成");if(State.maxComboSession>=30&&!d.hist.ach.includes("\u2728 コンボ30達成"))d.hist.ach.push("\u2728 コンボ30達成");saveData(d);}catch(e){}}
+function finishRecord(allClear){
+  try{
+    const d=getStore();
+    d.hist.play++;
+    d.hist.time+=Math.floor((Date.now()-State.startTs)/1000);
+    // FIX: 必ず到達ステージを記録（より小さくても上書きしないが、初回でも確実に記録）
+    if(!d.hist.maxStage || State.stage>d.hist.maxStage) d.hist.maxStage=State.stage;
+    if(State.maxComboSession>d.hist.maxCombo)d.hist.maxCombo=State.maxComboSession;
+    d.hist.totalHit+=State.totalHitSession;
+    if(State.maxComboSession>=20&&!d.hist.ach.includes("🔥 コンボ20達成"))d.hist.ach.push("🔥 コンボ20達成");
+    if(State.maxComboSession>=30&&!d.hist.ach.includes("✨ コンボ30達成"))d.hist.ach.push("✨ コンボ30達成");
+    saveData(d);
+    console.log("finishRecord saved: maxStage=", d.hist.maxStage);
+  }catch(e){console.error("finishRecord err",e);}
+}
 function closeOverlays(){$$(".overlay").forEach(o=>{o.classList.remove("show");o.style.display="";});}
 function quitToHome(){State.running=false;cancelAnimationFrame(State.rafId);stopBGM();$("#bossHpBar").classList.remove("show");$("#freezeTimer").classList.remove("show");$("#game").classList.remove("slomo");$("#game").classList.remove("paused");State.paused = false;$("#goFlash").classList.remove("show");closeOverlays();$("#endroll").classList.remove("show");$("#bossBlast").classList.remove("show");$("#bigCageScene").classList.remove("show");showScreen("home");updateBestScoreDisplay();updateUnlocksUI();}
 
