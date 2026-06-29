@@ -337,7 +337,7 @@ th{color:var(--neon1)}
 <div class="freeze-timer" id="freezeTimer"><span class="label">FREEZE</span><span id="freezeNum">3</span></div>
 <div class="toast" id="toast"></div>
 <div id="bossBlast"><div class="blast-core"></div></div>
-<div class="overlay" id="ovStageClear"><div class="box"><h2>STAGE CLEAR!</h2><p class="stat">Score: <b id="ovScore">0</b></p><p class="stat" id="ovNoDmg" style="color:var(--gold);display:none">🏅 ノーダメージ！</p><p class="stat">次のステージ: <b id="ovNext">2</b></p><div class="btns"><button class="btn warn" id="ovHome1">ホームへ</button><button class="btn green" id="ovNextBtn">次へ ▶</button></div></div></div>
+<div class="overlay" id="ovStageClear"><div class="box"><h2>STAGE CLEAR!</h2><p class="stat">Score: <b id="ovScore">0</b></p><p class="stat" id="ovNoDmg" style="color:var(--gold);display:none">🏅 ノーダメージ！</p><p class="stat">次のステージ: <b id="ovNext">2</b></p><div class="btns" style="justify-content:center"><button class="btn green" id="ovNextBtn" style="padding:14px 40px;font-size:16px">次へ ▶</button></div></div></div>
 <div class="overlay" id="ovGameOver"><div class="box"><h2 style="color:var(--warn);text-shadow:0 0 8px var(--warn)">GAME OVER</h2><p class="stat">到達ステージ: <b id="ovOverStage">1</b></p><p class="stat">スコア: <b id="ovOverScore">0</b></p><p class="stat" id="ovNewRec" style="color:var(--neon3);display:none">🎉 新記録！</p><div class="btns"><button class="btn warn" id="ovHome2">ホームへ</button><button class="btn green" id="ovRetry">リトライ</button></div></div></div>
 <div class="overlay" id="ovModeUnlock"><div class="box"><h2 id="unlockTitle">🔓 新モード開放！</h2><p class="stat" id="unlockDesc">超上級者モードが解禁されました！</p><div class="btns"><button class="btn green" id="ovUnlockOk" style="margin:0 auto">OK</button></div></div></div>
 <div class="overlay" id="ovPause"><div class="box"><h2>⏸ PAUSE</h2><div class="pause-icon">⏸</div><p class="stat">ゲームを一時停止しています</p><p class="stat" style="opacity:.7;font-size:11px">P / ESC キーでも再開できます</p><div class="btns"><button class="btn warn" id="ovPauseQuit">ホームへ</button><button class="btn green" id="ovPauseResume">▶ 再開</button></div></div></div>
@@ -497,30 +497,31 @@ function getStore(){const d=loadData();d.rank=d.rank||{beginner:[],normal:[],exp
 function pushRank(mode,score,stage){try{const d=getStore();d.rank[mode]=d.rank[mode]||[];d.rank[mode].push({score:score,stage:stage,date:new Date().toISOString().slice(0,10)});d.rank[mode].sort((a,b)=>b.score-a.score);d.rank[mode]=d.rank[mode].slice(0,10);saveData(d);return d.rank[mode].findIndex(r=>r.score===score&&r.stage===stage);}catch(e){return -1;}}
 function addAchievement(text){try{const d=getStore();if(!d.hist.ach.includes(text)){d.hist.ach.push(text);saveData(d);}}catch(e){}}
 
-function updateBestScoreDisplay(){try{const d=getStore();let bestScore=0,bestStage=0;["beginner","normal","expert","master","god"].forEach(m=>{(d.rank[m]||[]).forEach(r=>{if(r.score>bestScore){bestScore=r.score;bestStage=r.stage;}});});if(d.hist.maxStage>bestStage) bestStage=d.hist.maxStage;if(bestScore>0||bestStage>0){$("#bestScoreCard").style.display="flex";$("#bestScoreVal").textContent=bestScore.toLocaleString();$("#bestStageVal").textContent="Stage "+bestStage+" まで到達";}else $("#bestScoreCard").style.display="none";if(d.hist.maxStage>=2 && d.hist.maxStage<=19){$("#btnContinue").style.display="";$("#continueDesc").style.display="";$("#contStageNum").textContent=d.hist.maxStage;}else{$("#btnContinue").style.display="none";$("#continueDesc").style.display="none";}}catch(e){}}
-
-// v6.2 FIX: updateUnlocksUI accepts optional data arg to avoid stale reads from localStorage
-function updateUnlocksUI(givenData){
+function updateBestScoreDisplay(){
   try{
-    const d = givenData || getStore();
-    const mm=$("#modeMaster"),mg=$("#modeGod");
-    if(mm){
-      if(d.unlocked.master){mm.classList.remove("locked");}
-      else mm.classList.add("locked");
+    const d=getStore();
+    let bestScore=0,bestStage=0;
+    ["beginner","normal","expert","master","god"].forEach(m=>{
+      (d.rank[m]||[]).forEach(r=>{if(r.score>bestScore){bestScore=r.score;bestStage=r.stage;}});
+    });
+    if(d.hist.maxStage>bestStage) bestStage=d.hist.maxStage;
+    if(bestScore>0||bestStage>0){
+      $("#bestScoreCard").style.display="flex";
+      $("#bestScoreVal").textContent=bestScore.toLocaleString();
+      $("#bestStageVal").textContent="Stage "+bestStage+" まで到達";
+    }else $("#bestScoreCard").style.display="none";
+    // 「つづきから」は選択中モードの最高ステージを使う
+    d.hist.maxStageByMode = d.hist.maxStageByMode || {};
+    const modeMax = d.hist.maxStageByMode[State.mode] || 0;
+    if(modeMax >= 2 && modeMax <= 19){
+      $("#btnContinue").style.display="";
+      $("#continueDesc").style.display="";
+      $("#contStageNum").textContent=modeMax;
+    }else{
+      $("#btnContinue").style.display="none";
+      $("#continueDesc").style.display="none";
     }
-    if(mg){
-      if(d.unlocked.god){mg.classList.remove("locked");}
-      else mg.classList.add("locked");
-    }
-    const list=[];
-    if(d.unlocked.beginner)list.push("初心者");
-    if(d.unlocked.normal)list.push("ふつう");
-    if(d.unlocked.expert)list.push("上級者");
-    if(d.unlocked.master)list.push("超上級者");
-    if(d.unlocked.god)list.push("神");
-    const hs=$("#hsUnlocked");
-    if(hs) hs.innerHTML="解放モード: <b>"+list.join(" / ")+"</b>";
-  }catch(e){console.warn("updateUnlocksUI err",e);}
+  }catch(e){console.warn("updateBestScoreDisplay err",e);}
 }
 
 function svgMole(level){const colors=["#7a4a2a","#6a3a25","#553025","#3a2030","#2a1a40","#1a1a55","#102060","#0a2080","#4a0080","#000"];const c=colors[Math.min(level-1,colors.length-1)];let extra="";if(level>=2)extra+='<rect x="14" y="10" width="36" height="10" rx="5" fill="#888" stroke="#bbb" stroke-width="1"/>';if(level>=4)extra+='<rect x="10" y="20" width="44" height="6" fill="#444"/>';if(level>=5)extra+='<polygon points="32,2 28,12 36,12" fill="'+((level%2)?"#ff0":"#f0f")+'"/>';if(level>=6)extra+='<circle cx="22" cy="34" r="2.5" fill="#f00"/><circle cx="42" cy="34" r="2.5" fill="#f00"/>';if(level>=7)extra+='<path d="M18 50 L14 58 M46 50 L50 58" stroke="#0ff" stroke-width="2"/>';if(level>=8)extra+='<rect x="28" y="46" width="8" height="10" fill="#ff0"/>';if(level>=9)extra+='<path d="M10 8 L20 -2 M54 8 L44 -2" stroke="#f0f" stroke-width="3"/>';return '<svg viewBox="0 0 64 64"><ellipse cx="32" cy="40" rx="26" ry="22" fill="'+c+'"/><ellipse cx="32" cy="48" rx="14" ry="9" fill="#f8d0b8" opacity=".85"/><circle cx="24" cy="34" r="3" fill="#fff"/><circle cx="40" cy="34" r="3" fill="#fff"/><circle cx="24" cy="34" r="1.6" fill="#000"/><circle cx="40" cy="34" r="1.6" fill="#000"/><ellipse cx="32" cy="44" rx="3" ry="2" fill="#ff8da6"/>'+extra+'</svg>';}
@@ -607,24 +608,43 @@ function finishRecord(allClear){
     const d=getStore();
     d.hist.play++;
     d.hist.time+=Math.floor((Date.now()-State.startTs)/1000);
-    // FIX: 必ず到達ステージを記録（より小さくても上書きしないが、初回でも確実に記録）
-    if(!d.hist.maxStage || State.stage>d.hist.maxStage) d.hist.maxStage=State.stage;
-    if(State.maxComboSession>d.hist.maxCombo)d.hist.maxCombo=State.maxComboSession;
+    // モード別に最高ステージを記録
+    d.hist.maxStageByMode = d.hist.maxStageByMode || {};
+    const mm = State.mode;
+    if(!d.hist.maxStageByMode[mm] || State.stage > d.hist.maxStageByMode[mm]){
+      d.hist.maxStageByMode[mm] = State.stage;
+    }
+    // 全モード横断の最大値も更新（互換のため）
+    if(!d.hist.maxStage || State.stage > d.hist.maxStage) d.hist.maxStage = State.stage;
+    if(State.maxComboSession>d.hist.maxCombo) d.hist.maxCombo=State.maxComboSession;
     d.hist.totalHit+=State.totalHitSession;
-    if(State.maxComboSession>=20&&!d.hist.ach.includes("🔥 コンボ20達成"))d.hist.ach.push("🔥 コンボ20達成");
-    if(State.maxComboSession>=30&&!d.hist.ach.includes("✨ コンボ30達成"))d.hist.ach.push("✨ コンボ30達成");
+    if(State.maxComboSession>=20&&!d.hist.ach.includes("🔥 コンボ20達成")) d.hist.ach.push("🔥 コンボ20達成");
+    if(State.maxComboSession>=30&&!d.hist.ach.includes("✨ コンボ30達成")) d.hist.ach.push("✨ コンボ30達成");
     saveData(d);
-    console.log("finishRecord saved: maxStage=", d.hist.maxStage);
+    console.log("finishRecord saved:", mm, "stage", State.stage);
   }catch(e){console.error("finishRecord err",e);}
 }
 function closeOverlays(){$$(".overlay").forEach(o=>{o.classList.remove("show");o.style.display="";});}
 function quitToHome(){State.running=false;cancelAnimationFrame(State.rafId);stopBGM();$("#bossHpBar").classList.remove("show");$("#freezeTimer").classList.remove("show");$("#game").classList.remove("slomo");$("#game").classList.remove("paused");State.paused = false;$("#goFlash").classList.remove("show");closeOverlays();$("#endroll").classList.remove("show");$("#bossBlast").classList.remove("show");$("#bigCageScene").classList.remove("show");showScreen("home");updateBestScoreDisplay();updateUnlocksUI();}
 
-$$("[data-mode]").forEach(b=>{b.addEventListener("click",()=>{if(b.classList.contains("locked")){sfxBad();const mode=b.dataset.mode;if(mode==="master")toast("上級者をクリアで解放されます");else if(mode==="god")toast("超上級者をクリアで解放されます");return;}$$("[data-mode]").forEach(x=>x.classList.remove("sel"));b.classList.add("sel");State.mode=b.dataset.mode;});});
+$$("[data-mode]").forEach(b=>{
+  b.addEventListener("click",()=>{
+    if(b.classList.contains("locked")){
+      sfxBad();
+      const mode=b.dataset.mode;
+      if(mode==="master")toast("上級者をクリアで解放されます");
+      else if(mode==="god")toast("超上級者をクリアで解放されます");
+      return;
+    }
+    $$("[data-mode]").forEach(x=>x.classList.remove("sel"));
+    b.classList.add("sel");
+    State.mode=b.dataset.mode;
+    updateBestScoreDisplay(); // モード切替時に「つづきから」を更新
+  });
+});
 $("#btnStart").addEventListener("click",()=>startGame(1));
-$("#btnContinue").addEventListener("click",()=>{const d=getStore();startGame(d.hist.maxStage||1);});
+$("#btnContinue").addEventListener("click",()=>{const d=getStore();const ms=(d.hist.maxStageByMode||{})[State.mode]||1;startGame(ms);});
 $("#btnQuit").addEventListener("click",()=>{if(confirm("ホームに戻りますか？（現在の進行は破棄されます）"))quitToHome();});
-$("#ovHome1").addEventListener("click",quitToHome);
 $("#ovHome2").addEventListener("click",quitToHome);
 $("#ovNextBtn").addEventListener("click",nextStage);
 $("#ovRetry").addEventListener("click",()=>startGame(1));
@@ -636,7 +656,16 @@ function renderRank(mode){const d=getStore();const tb=$("#rankTable tbody");tb.i
 $("#btnRank").addEventListener("click",openRanking);
 $$("#ranking [data-rmode]").forEach(b=>{b.addEventListener("click",()=>{$$("#ranking [data-rmode]").forEach(x=>x.classList.remove("sel"));b.classList.add("sel");renderRank(b.dataset.rmode);});});
 
-function openHistory(){showScreen("history");const d=getStore();$("#hsPlay").textContent=d.hist.play;$("#hsTime").textContent=d.hist.time;$("#hsMaxStage").textContent=d.hist.maxStage;$("#hsMaxCombo").textContent=d.hist.maxCombo;$("#hsTotalHit").textContent=d.hist.totalHit;updateUnlocksUI(d);const ul=$("#hsAch");ul.innerHTML="";if(d.hist.ach.length===0)ul.innerHTML='<li style="opacity:.5">まだ実績はありません</li>';else d.hist.ach.forEach(a=>{const li=document.createElement("li");li.textContent=a;ul.appendChild(li);});}
+function openHistory(){showScreen("history");const d=getStore();$("#hsPlay").textContent=d.hist.play;$("#hsTime").textContent=d.hist.time;
+const mbm = d.hist.maxStageByMode || {};
+const stageStr = "全体: "+d.hist.maxStage+
+  " (初心:"+(mbm.beginner||0)+
+  " / 普:"+(mbm.normal||0)+
+  " / 上:"+(mbm.expert||0)+
+  " / 超:"+(mbm.master||0)+
+  " / 神:"+(mbm.god||0)+")";
+$("#hsMaxStage").textContent=stageStr;
+$("#hsMaxCombo").textContent=d.hist.maxCombo;$("#hsTotalHit").textContent=d.hist.totalHit;updateUnlocksUI(d);const ul=$("#hsAch");ul.innerHTML="";if(d.hist.ach.length===0)ul.innerHTML='<li style="opacity:.5">まだ実績はありません</li>';else d.hist.ach.forEach(a=>{const li=document.createElement("li");li.textContent=a;ul.appendChild(li);});}
 $("#btnHist").addEventListener("click",openHistory);
 
 $("#btnDL").addEventListener("click",()=>{const html="<!doctype html>\n"+document.documentElement.outerHTML;const blob=new Blob([html],{type:"text/html"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="mogura_tataki.html";document.body.appendChild(a);a.click();setTimeout(()=>{a.remove();URL.revokeObjectURL(url);},1000);});
