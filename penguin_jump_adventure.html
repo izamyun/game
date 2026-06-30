@@ -362,38 +362,38 @@ table.rank-table tr:nth-child(3) td{color:#CCA870;}
     <div id="deathFlash"></div>
 
     <div class="toast" id="toast"></div>
+  </div>
 
-    <!-- Pause overlay -->
-    <div class="game-overlay" id="overlayPause">
-      <div class="overlay-card">
-        <h2>⏸ ポーズ</h2>
-        <button class="btn btn-blue" id="btnResume">▶ つづける</button>
-        <button class="btn btn-orange" id="btnRestart">🔁 最初からやり直す</button>
-        <button class="btn btn-gray" id="btnToTitleP">🏠 タイトルへ</button>
-      </div>
+  <!-- Pause overlay (screen-game直下: canvas-wrapの高さ制限の影響を受けない) -->
+  <div class="game-overlay" id="overlayPause">
+    <div class="overlay-card">
+      <h2>⏸ ポーズ</h2>
+      <button class="btn btn-blue" id="btnResume">▶ つづける</button>
+      <button class="btn btn-orange" id="btnRestart">🔁 最初からやり直す</button>
+      <button class="btn btn-gray" id="btnToTitleP">🏠 タイトルへ</button>
     </div>
+  </div>
 
-    <!-- Result overlay -->
-    <div class="game-overlay" id="overlayResult">
-      <div class="overlay-card">
-        <h2 id="resultTitle">🎉 ステージクリア！</h2>
-        <div class="star-row" id="resultStars"></div>
-        <div class="stat-line"><span>クリアタイム</span><b id="resultTime"></b></div>
-        <div class="stat-line"><span>コイン</span><b id="resultCoin"></b></div>
-        <div class="stat-line"><span>ベスト</span><b id="resultBest"></b></div>
-        <button class="btn btn-blue" id="btnNextStage">▶ つぎのステージへ</button>
-        <button class="btn btn-gray" id="btnToTitleR">🏠 タイトルへ</button>
-      </div>
+  <!-- Result overlay -->
+  <div class="game-overlay" id="overlayResult">
+    <div class="overlay-card">
+      <h2 id="resultTitle">🎉 ステージクリア！</h2>
+      <div class="star-row" id="resultStars"></div>
+      <div class="stat-line"><span>クリアタイム</span><b id="resultTime"></b></div>
+      <div class="stat-line"><span>コイン</span><b id="resultCoin"></b></div>
+      <div class="stat-line"><span>ベスト</span><b id="resultBest"></b></div>
+      <button class="btn btn-blue" id="btnNextStage">▶ つぎのステージへ</button>
+      <button class="btn btn-gray" id="btnToTitleR">🏠 タイトルへ</button>
     </div>
+  </div>
 
-    <!-- Game Over overlay -->
-    <div class="game-overlay" id="overlayGameOver">
-      <div class="overlay-card">
-        <h2>💀 ゲームオーバー</h2>
-        <p id="goMsg"></p>
-        <button class="btn btn-orange" id="btnRetry">🔁 もう一度（ステージ1から）</button>
-        <button class="btn btn-gray" id="btnToTitleGO">🏠 タイトルへ</button>
-      </div>
+  <!-- Game Over overlay -->
+  <div class="game-overlay" id="overlayGameOver">
+    <div class="overlay-card">
+      <h2>💀 ゲームオーバー</h2>
+      <p id="goMsg"></p>
+      <button class="btn btn-orange" id="btnRetry">🔁 もう一度（ステージ1から）</button>
+      <button class="btn btn-gray" id="btnToTitleGO">🏠 タイトルへ</button>
     </div>
   </div>
 </div>
@@ -2894,16 +2894,22 @@ function renderHistory(){
    ゲーム内コントロール
    ========================================================== */
 function setupGameControls(){
-  // ── タップ/クリックでジャンプ (画面のどこでも) ──
-  const cv=document.getElementById("gameCanvas");
-  cv.addEventListener("touchstart",e=>{
-    e.preventDefault();
+  // ── タップ/クリックでジャンプ (画面のどこでも - canvas外も含む) ──
+  const screenGame=document.getElementById("screen-game");
+  function shouldIgnoreJumpTarget(target){
+    // ポーズボタンやオーバーレイのボタン等、UI操作中はジャンプを発火させない
+    return !!target.closest("#btnPause, .game-overlay, button");
+  }
+  screenGame.addEventListener("touchstart",e=>{
     if(document.querySelector(".game-overlay.active"))return;
+    if(shouldIgnoreJumpTarget(e.target))return;
+    e.preventDefault();
     doJump();
   },{passive:false});
-  cv.addEventListener("mousedown",e=>{
+  screenGame.addEventListener("mousedown",e=>{
     if(e.button!==0)return;
     if(document.querySelector(".game-overlay.active"))return;
+    if(shouldIgnoreJumpTarget(e.target))return;
     doJump();
   });
 
