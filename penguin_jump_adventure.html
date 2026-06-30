@@ -68,6 +68,7 @@ html,body{
 .btn-gray{background:linear-gradient(180deg,#8898AA,#5A6878);color:#eee;}
 .btn-gold{background:linear-gradient(180deg,#FFE566,#FFB800);color:#7A4000;}
 .btn-purple{background:linear-gradient(180deg,#C87EFF,#8B2EE0);}
+.btn-pink{background:linear-gradient(180deg,#FF9BD2,#E8449A);}
 .btn-small{padding:7px 13px;font-size:clamp(10px,2.6vw,13px);border-radius:12px;}
 .btn[disabled]{filter:grayscale(.5);opacity:.5;cursor:default;transform:none;box-shadow:none;}
 
@@ -310,6 +311,9 @@ table.rank-table tr:nth-child(3) td{color:#CCA870;}
       <button class="btn btn-gold btn-small" id="btnRanking">🏆 ランキング</button>
       <button class="btn btn-purple btn-small" id="btnHistory">🎖️ 実績</button>
       <button class="btn btn-gray btn-small" id="btnDownload">⇩ 保存</button>
+    </div>
+    <div class="action-row">
+      <a class="btn btn-pink btn-small" id="btnOtherGames" href="index.html" style="flex:1;text-decoration:none;display:flex;align-items:center;justify-content:center;">🎮 他のゲームで遊ぶ</a>
     </div>
   </div>
   <div class="title-footer">
@@ -2721,7 +2725,6 @@ const ACHIEVEMENTS=[
   {k:"play_100",    emoji:"🏆", name:"100回プレイ！",         desc:"100回プレイした（すごい！）"},
   {k:"miss_10",     emoji:"💀", name:"10回ミス",              desc:"通算ミスが10回に達した"},
   {k:"miss_100",    emoji:"👻", name:"100回ミス！",           desc:"通算ミスが100回に達した（負けないで！）"},
-  {k:"speed_clear", emoji:"⚡", name:"スピードクリア",        desc:"1ステージを30秒以内にクリアした"},
   {k:"s1_allcoin",  emoji:"🐧", name:"ステージ1完全制覇",    desc:"ステージ1で全コイン取得"},
   {k:"s10_allcoin", emoji:"☁️", name:"雲の上で完璧に",       desc:"ステージ10で全コイン取得"},
   {k:"s20_allcoin", emoji:"🌈", name:"虹色コレクター",       desc:"ステージ20で全コイン取得"},
@@ -2729,7 +2732,6 @@ const ACHIEVEMENTS=[
   {k:"reach_s20",   emoji:"✨", name:"虹色フィナーレ",       desc:"ステージ20「虹色フィナーレ」に到達"},
   {k:"time_60min",  emoji:"⏰", name:"1時間プレイ",          desc:"累計プレイ時間が1時間を超えた"},
   {k:"hard_allcoin",emoji:"🌟", name:"ハード全コイン",        desc:"ハードモードで1ステージ全コイン取得"},
-  {k:"debug_used",  emoji:"🔧", name:"デバッガー",            desc:"デバッグモードを使用した"},
 ];
 
 function checkAchievements(ev){
@@ -2769,7 +2771,6 @@ function checkAchievements(ev){
       if(fullCount>=5) unlock("coins_5stg");
       if(fullCount>=TOTAL_STAGES) unlock("all_coins_all");
     }
-    if(ev.elapsed&&ev.elapsed<30) unlock("speed_clear");
     const c=h.totalCoins||0;
     if(c>=100) unlock("coin_100");
     if(c>=1000) unlock("coin_1000");
@@ -3162,7 +3163,6 @@ function goToEnding(){
    ========================================================== */
 function openDebugPanel(){
   Audio_.init(); Audio_.resume();
-  const h=Storage.getHist(); h.achv=h.achv||{}; h.achv.debug_used=true; Storage.saveHist(h);
   // ステージ選択肢を埋める
   const sel=document.getElementById("dbStageSelect"); sel.innerHTML="";
   for(let i=1;i<=TOTAL_STAGES;i++){
