@@ -47,6 +47,11 @@ section{padding:60px 0;position:relative;z-index:1}
 .game-card.coming-soon .game-title{color:#888;text-shadow:none}
 .game-card.coming-soon .game-icon{filter:grayscale(.8) drop-shadow(0 0 8px rgba(255,255,255,.2))}
 .coming-badge{display:inline-block;padding:9px 28px;border:1px dashed #666;border-radius:8px;color:#666;font-size:.9em;letter-spacing:2px}
+/* ===== NEW BADGE ===== */
+.new-badge{position:absolute;top:12px;right:12px;padding:4px 12px;background:linear-gradient(135deg,#f00,#f80);color:#fff;font-size:.72em;font-weight:900;letter-spacing:1.5px;border-radius:6px;box-shadow:0 0 12px rgba(255,80,0,.8);animation:newPulse 1.5s infinite;z-index:3;border:1.5px solid #fff;font-family:'Segoe UI',sans-serif}
+@keyframes newPulse{0%,100%{transform:scale(1);box-shadow:0 0 12px rgba(255,80,0,.8),0 0 4px rgba(255,255,0,.6)}50%{transform:scale(1.12);box-shadow:0 0 22px rgba(255,120,0,1),0 0 8px rgba(255,255,0,.9)}}
+.game-card.newest{border-color:#fa0;box-shadow:0 0 24px rgba(255,170,0,.25)}
+.game-card.newest:hover{border-color:#fd0;box-shadow:0 10px 30px rgba(255,200,0,.5)}
 /* ===== ABOUT ===== */
 .about-box{background:linear-gradient(160deg,#12122a,#1a1a35);border:2px solid #2a2a3e;border-radius:18px;padding:32px 28px;max-width:780px;margin:0 auto;text-align:center}
 .about-box h3{color:#f0f;font-size:1.15em;margin-bottom:14px;letter-spacing:2px;text-shadow:0 0 10px #f0f}
@@ -89,53 +94,34 @@ footer a:hover{text-decoration:underline}
 <section id="games">
 <div class="container">
 <h2 class="sect-title">GAMES</h2>
-<p class="sect-sub">- 公開中のゲーム -</p>
+<p class="sect-sub">- 新しい順 -</p>
 <div class="games-grid">
-<div class="game-card">
-<div class="game-icon">&#128640;</div>
-<div class="game-title">SKY DEFENDER</div>
-<div class="game-tags">
-<span class="tag">シューティング</span>
-<span class="tag">インベーダー風</span>
-<span class="tag">4モード</span>
-<span class="tag">20ステージ</span>
-<span class="tag">9アイテム</span>
-</div>
-<p class="game-desc">インベーダー風の本格シューティングゲーム！<br>多彩な敵編隊や巨大ボスを撃破しながら全20ステージを攻略。レーザー強化・シールド・爆弾・貫通レーザーなど9種類のアイテムで爽快なネオンバトルが楽しめる。</p>
-<a href="neon_sky_defender_ex_plus.html" class="play-btn">&#9654; PLAY</a>
-</div>
-<div class="game-card">
-<div class="game-icon">&#127937;</div>
-<div class="game-title">BLOCK BREAKER</div>
+<div class="game-card newest">
+<div class="new-badge">NEW</div>
+<div class="game-icon">&#127756;</div>
+<div class="game-title">GROGU ADVENTURE</div>
 <div class="game-tags">
 <span class="tag">アクション</span>
-<span class="tag">5モード</span>
-<span class="tag">9アイテム</span>
+<span class="tag">3難易度</span>
+<span class="tag">20ステージ</span>
+<span class="tag">5ワールド</span>
+<span class="tag">ボス5体</span>
 </div>
-<p class="game-desc">懐かしのブロック崩し！<br>ノーマル・ハード・タイムアタック・エンドレスなど多彩なモード搭載。ビーム、ウォール、貫通ボールなど9種類のアイテムでド派手なプレイが楽しめる。</p>
-<a href="block_breaker.html" class="play-btn">&#9654; PLAY</a>
-</div>
-<div class="game-card">
-<div class="game-icon">&#129513;</div>
-<div class="game-title">BLOCK DROP</div>
-<div class="game-tags">
-<span class="tag">パズル</span>
-<span class="tag">落ちもの</span>
-</div>
-<p class="game-desc">テトリス風の落ちものパズル！<br>降ってくるブロックを揃えてラインを消そう。シンプルだけど熱中度MAX。集中力と判断力を試そう。</p>
-<a href="block-drop.html" class="play-btn">&#9654; PLAY</a>
+<p class="game-desc">銀河を舞台にした2Dジャンプアクション！<br>砂漠・街・森・火山・宇宙の5ワールド全20ステージ。EASY/NORMAL/HARDの3難易度、ベビーポッド・マンダロリアン無敵などのアイテム、5体のボス戦、感動のエンディング演出まで詰め込んだ大作！</p>
+<a href="grogu_adventure.html" class="play-btn">&#9654; PLAY</a>
 </div>
 <div class="game-card">
-<div class="game-icon">&#127872;</div>
-<div class="game-title">KOTOBA TSUNAGI</div>
+<div class="game-icon">&#128039;</div>
+<div class="game-title">PENGUIN JUMP</div>
 <div class="game-tags">
-<span class="tag">パズル</span>
-<span class="tag">ことば遊び</span>
-<span class="tag">3モード</span>
-<span class="tag">ランキング</span>
+<span class="tag">アクション</span>
+<span class="tag">2モード</span>
+<span class="tag">20ステージ</span>
+<span class="tag">オートラン</span>
+<span class="tag">実績30種</span>
 </div>
-<p class="game-desc">ひらがなをなぞって単語を作る、ことばつなぎパズル！<br>標準・タイムアタック・初心者(ヒント付)の3モード搭載。8方向につながる文字をなぞって辞書にある単語を完成させよう。</p>
-<a href="kotoba-tsunagi.html" class="play-btn">&#9654; PLAY</a>
+<p class="game-desc">とべ！よけろ！コインをあつめろ！<br>20ステージの自動スクロールジャンプアクション。標準/ハードの2モード、二段ジャンプ、ハート＆魚アイテム、30種の実績、感動のエンディング演出が楽しめる！</p>
+<a href="penguin_jump_adventure.html" class="play-btn">&#9654; PLAY</a>
 </div>
 <div class="game-card">
 <div class="game-icon">&#129451;</div>
@@ -151,17 +137,50 @@ footer a:hover{text-decoration:underline}
 <a href="mogura_tataki.html" class="play-btn">&#9654; PLAY</a>
 </div>
 <div class="game-card">
-<div class="game-icon">&#128039;</div>
-<div class="game-title">PENGUIN JUMP</div>
+<div class="game-icon">&#127872;</div>
+<div class="game-title">KOTOBA TSUNAGI</div>
+<div class="game-tags">
+<span class="tag">パズル</span>
+<span class="tag">ことば遊び</span>
+<span class="tag">3モード</span>
+<span class="tag">ランキング</span>
+</div>
+<p class="game-desc">ひらがなをなぞって単語を作る、ことばつなぎパズル！<br>標準・タイムアタック・初心者(ヒント付)の3モード搭載。8方向につながる文字をなぞって辞書にある単語を完成させよう。</p>
+<a href="kotoba-tsunagi.html" class="play-btn">&#9654; PLAY</a>
+</div>
+<div class="game-card">
+<div class="game-icon">&#129513;</div>
+<div class="game-title">BLOCK DROP</div>
+<div class="game-tags">
+<span class="tag">パズル</span>
+<span class="tag">落ちもの</span>
+</div>
+<p class="game-desc">テトリス風の落ちものパズル！<br>降ってくるブロックを揃えてラインを消そう。シンプルだけど熱中度MAX。集中力と判断力を試そう。</p>
+<a href="block-drop.html" class="play-btn">&#9654; PLAY</a>
+</div>
+<div class="game-card">
+<div class="game-icon">&#127937;</div>
+<div class="game-title">BLOCK BREAKER</div>
 <div class="game-tags">
 <span class="tag">アクション</span>
-<span class="tag">2モード</span>
-<span class="tag">20ステージ</span>
-<span class="tag">オートラン</span>
-<span class="tag">実績30種</span>
+<span class="tag">5モード</span>
+<span class="tag">9アイテム</span>
 </div>
-<p class="game-desc">とべ！よけろ！コインをあつめろ！<br>20ステージの自動スクロールジャンプアクション。標準/ハードの2モード、二段ジャンプ、ハート＆魚アイテム、30種の実績、感動のエンディング演出が楽しめる！</p>
-<a href="penguin_jump_adventure.html" class="play-btn">&#9654; PLAY</a>
+<p class="game-desc">懐かしのブロック崩し！<br>ノーマル・ハード・タイムアタック・エンドレスなど多彩なモード搭載。ビーム、ウォール、貫通ボールなど9種類のアイテムでド派手なプレイが楽しめる。</p>
+<a href="block_breaker.html" class="play-btn">&#9654; PLAY</a>
+</div>
+<div class="game-card">
+<div class="game-icon">&#128640;</div>
+<div class="game-title">SKY DEFENDER</div>
+<div class="game-tags">
+<span class="tag">シューティング</span>
+<span class="tag">インベーダー風</span>
+<span class="tag">4モード</span>
+<span class="tag">20ステージ</span>
+<span class="tag">9アイテム</span>
+</div>
+<p class="game-desc">インベーダー風の本格シューティングゲーム！<br>多彩な敵編隊や巨大ボスを撃破しながら全20ステージを攻略。レーザー強化・シールド・爆弾・貫通レーザーなど9種類のアイテムで爽快なネオンバトルが楽しめる。</p>
+<a href="neon_sky_defender_ex_plus.html" class="play-btn">&#9654; PLAY</a>
 </div>
 </div>
 </div>
@@ -236,7 +255,7 @@ footer a:hover{text-decoration:underline}
 <p>・利用により生じた損害について、作成者は一切の責任を負いません。</p>
 <p>・お問い合わせは <a href="https://buymeacoffee.com/izamyun" target="_blank" rel="noopener noreferrer">こちら</a> から。</p>
 </div>
-<p class="copy">&copy; 2026 izamyun &nbsp;|&nbsp; Created: 2026-06-19 &nbsp;|&nbsp; Updated: 2026-06-30 &nbsp;|&nbsp; v1.4.0</p>
+<p class="copy">&copy; 2026 izamyun &nbsp;|&nbsp; Created: 2026-06-19 &nbsp;|&nbsp; Updated: 2026-06-24 &nbsp;|&nbsp; v1.5.0</p>
 </div>
 </footer>
 </body>
